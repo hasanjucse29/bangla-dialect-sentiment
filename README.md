@@ -51,9 +51,9 @@ Pretrained Bengali transformer encoders (`BanglaBERT`, `mBERT`, and `XLM-RoBERTa
 
 The clean benchmark (`16,865` rows: `13,491` train / `1,689` validation / `1,685` test) harmonizes three publicly accessible academic corpora:
 
-- **Chattogram Sent** (Uddin et al., 2025, Mendeley Data V1, `doi:10.17632/k6hts2ktxw.1`): `4,030` Chatgaiya-Standard pairs with native 3-class sentiment labels.
-- **ANUBHUTI** (Kundu et al., 2025, `arXiv:2506.21686`): `9,892` parallel 4-dialect utterances deterministically mapped from 7 Ekman emotions to 3 sentiment polarities.
-- **SAPTAK** (Ullah et al., 2026, Mendeley Data V1, `doi:10.17632/v9cf66fk2t.1`): `2,943` aligned Sylhet, Noakhali, and Mymensingh pairs (`981` per dialect) with manual 3-class sentiment labels on the `981` Standard Bangla source sentences.
+- **Chattogram Sent** (Chowdhury et al., 2025, Mendeley Data V1, `doi:10.17632/k6hts2ktxw.1`): `4,030` Chatgaiya-Standard pairs with native 3-class sentiment labels.
+- **ANUBHUTI** (Kundu et al., 2026, IEEE QPAIN, `doi:10.1109/QPAIN69676.2026.11545901`): `9,892` parallel 4-dialect utterances deterministically mapped from 7 Ekman emotions to 3 sentiment polarities.
+- **SAPTAK** (Rakib et al., 2026, Mendeley Data V1, `doi:10.17632/v9cf66fk2t.1`): `2,943` aligned Sylhet, Noakhali, and Mymensingh pairs (`981` per dialect) with manual 3-class sentiment labels on the `981` Standard Bangla source sentences.
 
 All curation scripts, deduplicated splits, manual *SAPTAK* source sentiment annotations, and audit logs in this repository are released under **Creative Commons Attribution 4.0 International (CC BY 4.0)** (code under **MIT License**), subject to the original terms of the underlying source datasets.
 

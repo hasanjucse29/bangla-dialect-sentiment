@@ -1,0 +1,75 @@
+{
+  "raw_loaded_rows": 17301,
+  "anubhuti_conflict_groups_dropped": 23,
+  "non_nfc_raw_dialect_rows_normalized": 8341,
+  "sha256_exact_duplicates_dropped": 434,
+  "sha256_label_conflict_rows_dropped": 2,
+  "clean_total_rows": 16865,
+  "unique_group_ids": 7475,
+  "split_counts": {
+    "test": 1685,
+    "train": 13491,
+    "val": 1689
+  },
+  "pure_4dialect_parallel_split_counts": {
+    "train": 7908,
+    "test": 988,
+    "val": 988
+  },
+  "leakage_verification": {
+    "group_id_train_test_overlap": 0,
+    "group_id_train_val_overlap": 0,
+    "group_id_val_test_overlap": 0,
+    "std_text_train_test_overlap": 0,
+    "dialect_pair_train_test_overlap": 0
+  },
+  "region_x_sentiment": {
+    "Chattogram_negative": 3505,
+    "Chattogram_neutral": 1857,
+    "Chattogram_positive": 1140,
+    "Mymensingh_negative": 2343,
+    "Mymensingh_neutral": 548,
+    "Mymensingh_positive": 563,
+    "Noakhali_negative": 2345,
+    "Noakhali_neutral": 548,
+    "Noakhali_positive": 563,
+    "Sylhet_negative": 2343,
+    "Sylhet_neutral": 547,
+    "Sylhet_positive": 563
+  },
+  "test_region_x_sentiment": {
+    "Chattogram_negative": 350,
+    "Chattogram_neutral": 186,
+    "Chattogram_positive": 114,
+    "Mymensingh_negative": 234,
+    "Mymensingh_neutral": 55,
+    "Mymensingh_positive": 56,
+    "Noakhali_negative": 234,
+    "Noakhali_neutral": 55,
+    "Noakhali_positive": 56,
+    "Sylhet_negative": 234,
+    "Sylhet_neutral": 55,
+    "Sylhet_positive": 56
+  },
+  "source_x_region": {
+    "ANUBHUTI_Corpus_Chattogram": 2472,
+    "ANUBHUTI_Corpus_Mymensingh": 2473,
+    "ANUBHUTI_Corpus_Noakhali": 2475,
+    "ANUBHUTI_Corpus_Sylhet": 2472,
+    "Original_Chattogram_Dataset_Chattogram": 4030,
+    "SAPTAK_Manual_Annotation_Mymensingh": 981,
+    "SAPTAK_Manual_Annotation_Noakhali": 981,
+    "SAPTAK_Manual_Annotation_Sylhet": 981
+  },
+  "source_x_sentiment": {
+    "ANUBHUTI_Corpus_negative": 8579,
+    "ANUBHUTI_Corpus_neutral": 114,
+    "ANUBHUTI_Corpus_positive": 1199,
+    "Original_Chattogram_Dataset_negative": 1360,
+    "Original_Chattogram_Dataset_neutral": 1829,
+    "Original_Chattogram_Dataset_positive": 841,
+    "SAPTAK_Manual_Annotation_negative": 597,
+    "SAPTAK_Manual_Annotation_neutral": 1557,
+    "SAPTAK_Manual_Annotation_positive": 789
+  }
+}

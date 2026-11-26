@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Model Checkpoints & Large Binary Weights
+*.safetensors
+*.pt
+*.bin
+*.pth
+*.onnx
+models/**/*.safetensors
+models/**/*.pt
+models/**/*.bin
+results/saved_models/
+**/checkpoint-*/
+
+# Local Binaries & Tools
+.bin/
+
+# Temporary / Lock / OS Files
+~$*.pptx
+~$*.docx
+Thumbs.db
+.DS_Store
+*.tmp
+
+# LaTeX build artifacts (if any standard LaTeX compiler is run locally)
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.fdb_latexmk
+*.fls

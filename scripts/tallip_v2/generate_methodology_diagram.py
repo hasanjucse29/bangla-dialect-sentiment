@@ -298,9 +298,9 @@ def render_publication_figure(out_dir: str) -> None:
     plt.rcParams["font.family"] = "DejaVu Sans"
     plt.rcParams["mathtext.fontset"] = "stix"
 
-    fig, ax = plt.subplots(figsize=(12.8, 5.6))
+    fig, ax = plt.subplots(figsize=(12.8, 5.05))
     ax.set_xlim(0, 12.8)
-    ax.set_ylim(0, 5.6)
+    ax.set_ylim(0.45, 5.55)
     ax.axis("off")
     fig.patch.set_facecolor(COLORS["bg"])
 
@@ -424,28 +424,6 @@ def render_publication_figure(out_dir: str) -> None:
         color=COLORS["muted_ink"], lw=1.15, ls="--",
         label=r"Init $W_{\mathrm{S1}}$ (freeze)", label_pos=(8.85, 2.98)
     )
-
-    # ------------------------------------------------------------------
-    # Compact Bottom Shape & Parameter Legend
-    # ------------------------------------------------------------------
-    yl = 0.25
-    draw_cylinder(ax, 1.10, yl, 0.34, 0.24, "", "", lw=0.95)
-    ax.text(1.35, yl, "Corpus / Store", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
-
-    draw_parallelogram(ax, 2.90, yl, 0.38, 0.20, "", "", skew=0.08, lw=0.95)
-    ax.text(3.18, yl, "Data I/O", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
-
-    draw_rect(ax, 4.45, yl, 0.36, 0.20, "", "", lw=0.95)
-    ax.text(4.71, yl, "Process / Layer", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
-
-    draw_trapezoid(ax, 6.42, yl, 0.34, 0.22, 0.11, "", "", lw=1.05)
-    ax.text(6.67, yl, "Low-Rank Proj.", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
-
-    draw_rect(ax, 8.38, yl, 0.36, 0.20, "", "", fc=COLORS["frozen_bg"], ec=COLORS["frozen_bd"], lw=1.1, ls="--")
-    ax.text(8.64, yl, "Frozen (99.2%)", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
-
-    draw_rect(ax, 10.42, yl, 0.36, 0.20, "", "", fc=COLORS["train_bg"], ec=COLORS["train_bd"], lw=1.2, ls="-")
-    ax.text(10.68, yl, "Trainable (0.8%)", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
 
     os.makedirs(out_dir, exist_ok=True)
     for ext, dpi in [("pdf", None), ("svg", None), ("png", 400)]:

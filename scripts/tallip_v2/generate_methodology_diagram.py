@@ -1,136 +1,196 @@
 """
-Generate Editable draw.io (.drawio) XML and Matching 400 DPI Publication Diagram
-================================================================================
-Creates:
+Generate Publication-Grade CS/NLP System Architecture & Data-Flow Diagram
+=========================================================================
+Produces both an editable native draw.io (.drawio) XML file using standard
+ISO-5807 / neural-architecture shapes and crisp vector/raster outputs:
   1. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.drawio
-     (Standard diagrams.net mxGraphModel XML - directly editable in draw.io)
-  2. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.png (400 DPI)
-  3. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.pdf (Vector)
-  4. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.svg (Vector)
+  2. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.pdf
+  3. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.svg
+  4. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.png (400 DPI)
 """
 
 import os
+import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+from matplotlib.patches import (
+    Circle,
+    Ellipse,
+    FancyArrowPatch,
+    PathPatch,
+    Polygon,
+    Rectangle,
+)
+from matplotlib.path import Path
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 FIG_DIR = os.path.join(BASE_DIR, "manuscripts", "01_TALLIP_Short_Note", "figures")
 
-PALETTE = {
-    "lane1_bg": "#f0f6fc", "lane1_bd": "#6c8ebf", "lane1_hdr": "#1f4e79",
-    "lane2_bg": "#fff9e6", "lane2_bd": "#d6b656", "lane2_hdr": "#7f6000",
-    "lane3_bg": "#edf7ed", "lane3_bd": "#82b366", "lane3_hdr": "#274e13",
-    "lane4_bg": "#f5eef8", "lane4_bd": "#9673a6", "lane4_hdr": "#4c1130",
-    "box_blue_bg": "#dae8fc", "box_blue_bd": "#6c8ebf",
-    "box_amber_bg": "#fff2cc", "box_amber_bd": "#d6b656",
-    "box_red_bg": "#f8cecc", "box_red_bd": "#b85450",
-    "box_green_bg": "#d5e8d4", "box_green_bd": "#82b366",
-    "box_purple_bg": "#e1d5e7", "box_purple_bd": "#9673a6",
-    "box_gray_bg": "#f5f5f5", "box_gray_bd": "#666666",
+# Restrained grayscale-first academic palette (60-30-10)
+COLORS = {
+    "bg": "#FFFFFF",
+    "panel_bd": "#CBD5E1",
+    "panel_title": "#0F172A",
+    "ink": "#1F2937",
+    "muted_ink": "#4B5563",
+    "neutral_bg": "#F8FAFC",
+    "neutral_bd": "#475569",
+    "frozen_bg": "#F1F5F9",
+    "frozen_bd": "#64748B",
+    "train_bg": "#E6EEF8",
+    "train_bd": "#2C5282",
+    "group_bd": "#94A3B8",
 }
 
 
-def write_drawio_xml(out_path: str):
-    """Write a genuine, directly editable draw.io (diagrams.net) XML file."""
-    xml = """<mxfile host="app.diagrams.net" modified="2026-11-26T07:35:00.000Z" agent="TALLIP-V2-Generator" version="24.7.17" type="device">
-  <diagram id="tallip-v2-workflow" name="End-to-End Methodology">
-    <mxGraphModel dx="1420" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="620" math="0" shadow="0">
+def write_drawio_xml(out_path: str) -> None:
+    """Write a native editable draw.io XML using standard CS shapes."""
+    xml = """<mxfile host="app.diagrams.net" modified="2026-11-26T14:20:00.000Z" agent="TALLIP-V2-ArchDiagram" version="24.7.17" type="device">
+  <diagram id="tallip-v2-arch" name="System Architecture and Data-Flow">
+    <mxGraphModel dx="1440" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="560" math="1" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- Swimlane 1: Data Curation -->
-        <mxCell id="lane1" value="1. Zero-Overlap Data Curation" style="swimlane;whiteSpace=wrap;html=1;rounded=1;arcSize=8;fillColor=#f0f6fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;fontColor=#1f4e79;startSize=32;strokeWidth=1.8;" vertex="1" parent="1">
-          <mxGeometry x="20" y="20" width="320" height="560" as="geometry" />
+        <!-- Panel (a) Container -->
+        <mxCell id="panel_a" value="(a) Data-Flow &amp; Diagnostic Pipeline" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="20" y="15" width="1240" height="225" as="geometry" />
         </mxCell>
-        <mxCell id="n1_1" value="&lt;b&gt;Three Public Regional Corpora&lt;/b&gt;&lt;br/&gt;• Chattogram Sent (4,030 native)&lt;br/&gt;• ANUBHUTI (9,892; 7 emotions -&amp;gt; 3-class)&lt;br/&gt;• SAPTAK (2,943; 981 manual Std labels)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane1">
-          <mxGeometry x="15" y="50" width="290" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="n1_2" value="&lt;b&gt;Canonical Cleaning &amp;amp; Deduplication&lt;/b&gt;&lt;br/&gt;• Unicode NFC (8,341 fixed)&lt;br/&gt;• Drop 23 conflict groups + 436 SHA-256 dups&lt;br/&gt;• Clean Total: &lt;b&gt;16,865 rows&lt;/b&gt; (7,475 groups)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane1">
-          <mxGeometry x="15" y="190" width="290" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="n1_3" value="&lt;b&gt;Group-Stratified 80 / 10 / 10 Split&lt;/b&gt;&lt;br/&gt;Keyed strictly on Standard_Text hash&lt;br/&gt;• Train: 13,491 | Val: 1,689 | Test: 1,685&lt;br/&gt;• &lt;b&gt;0.00% exact-group overlap&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane1">
-          <mxGeometry x="15" y="330" width="290" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="n1_4" value="&lt;b&gt;Model-Specific Preprocessing&lt;/b&gt;&lt;br/&gt;• BanglaBERT: csebuetnlp/normalizer&lt;br/&gt;• mBERT / XLM-R / CANINE-C: NFC text" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane1">
-          <mxGeometry x="15" y="465" width="290" height="75" as="geometry" />
-        </mxCell>
-        <mxCell id="e1_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane1" source="n1_1" target="n1_2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane1" source="n1_2" target="n1_3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e1_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane1" source="n1_3" target="n1_4"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <!-- Swimlane 2: RQ1 Diagnostics -->
-        <mxCell id="lane2" value="2. RQ1: Tokenization &amp; Error Audit" style="swimlane;whiteSpace=wrap;html=1;rounded=1;arcSize=8;fillColor=#fff9e6;strokeColor=#d6b656;fontStyle=1;fontSize=13;fontColor=#7f6000;startSize=32;strokeWidth=1.8;" vertex="1" parent="1">
-          <mxGeometry x="370" y="20" width="320" height="560" as="geometry" />
+        <mxCell id="a_raw" value="&lt;b&gt;Raw Corpora&lt;/b&gt;&lt;br/&gt;3 Regional Sets" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="95" width="130" height="76" as="geometry" />
         </mxCell>
-        <mxCell id="n2_1" value="&lt;b&gt;Multi-Tokenizer Fertility Profiling&lt;/b&gt;&lt;br/&gt;• BanglaBERT WP: Chat. &lt;b&gt;+48.61%&lt;/b&gt;&lt;br/&gt;• XLM-R SP: Chat. &lt;b&gt;+40.45%&lt;/b&gt; | mBERT: +19.36%&lt;br/&gt;• Hierarchy: Mym &amp;lt; Noak &amp;lt; Sylh &amp;lt;&amp;lt; Chat." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane2">
-          <mxGeometry x="15" y="50" width="290" height="105" as="geometry" />
+        <mxCell id="a_nfc" value="&lt;b&gt;NFC &amp;amp; Dedup&lt;/b&gt;&lt;br/&gt;SHA-256 Clean" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="225" y="102" width="140" height="62" as="geometry" />
         </mxCell>
-        <mxCell id="n2_2" value="&lt;b&gt;Stage 1 -&amp;gt; Stage 2 Zero-Shot Drop&lt;/b&gt;&lt;br/&gt;• Stage 1 Standard FT: 83.24% / 0.7887 F1&lt;br/&gt;• Stage 2 Dialect Zero-Shot: 74.26% / 0.6217&lt;br/&gt;• BUET Normalizer: &lt;b&gt;+0.0578 F1&lt;/b&gt; (seed 42)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane2">
-          <mxGeometry x="15" y="190" width="290" height="105" as="geometry" />
+        <mxCell id="a_split" value="&lt;b&gt;Group Split&lt;/b&gt;&lt;br/&gt;80 / 10 / 10" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="420" y="102" width="135" height="62" as="geometry" />
         </mxCell>
-        <mxCell id="n2_3" value="&lt;b&gt;Controlled Error Modeling (N=1,685)&lt;/b&gt;&lt;br/&gt;• Macro fit: r=0.9907 (s42) | r=0.9942 (3-seed)&lt;br/&gt;• Logit Edit Dist: &lt;b&gt;OR=7.28&lt;/b&gt; (p=1.2e-4)&lt;br/&gt;• Logit Fertility: &lt;b&gt;OR=1.59&lt;/b&gt; (p=0.0401)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane2">
-          <mxGeometry x="15" y="330" width="290" height="105" as="geometry" />
+        <mxCell id="a_clean" value="&lt;b&gt;Clean Splits&lt;/b&gt;&lt;br/&gt;0% Overlap" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="610" y="95" width="130" height="76" as="geometry" />
         </mxCell>
-        <mxCell id="n2_4" value="&lt;b&gt;200-Sample 4-Way Error Taxonomy&lt;/b&gt;&lt;br/&gt;Subword 29.5% (55.9% fixed) | OOV 28.0%&lt;br/&gt;Pragmatic 27.5% | Negation Shift 15.0%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane2">
-          <mxGeometry x="15" y="465" width="290" height="75" as="geometry" />
-        </mxCell>
-        <mxCell id="e2_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane2" source="n2_1" target="n2_2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane2" source="n2_2" target="n2_3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane2" source="n2_3" target="n2_4"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <!-- Swimlane 3: RQ2 Stage-1 Anchor LoRA -->
-        <mxCell id="lane3" value="3. RQ2: Stage-1-Initialized Anchor LoRA" style="swimlane;whiteSpace=wrap;html=1;rounded=1;arcSize=8;fillColor=#edf7ed;strokeColor=#82b366;fontStyle=1;fontSize=13;fontColor=#274e13;startSize=32;strokeWidth=1.8;" vertex="1" parent="1">
-          <mxGeometry x="720" y="20" width="390" height="560" as="geometry" />
+        <mxCell id="a_norm" value="&lt;b&gt;BUET / NFC Norm.&lt;/b&gt;&lt;br/&gt;Text Stream" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="820" y="55" width="165" height="58" as="geometry" />
         </mxCell>
-        <mxCell id="n3_1" value="&lt;b&gt;Stage 1 Canonical Checkpoint (W_S1)&lt;/b&gt;&lt;br/&gt;Fine-tuned on Standard Bangla (n=13,491; 3 ep, lr=2e-5)&lt;br/&gt;Preserves formal sentiment decision geometry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane3">
-          <mxGeometry x="15" y="50" width="360" height="80" as="geometry" />
+        <mxCell id="a_rq1" value="&lt;b&gt;RQ1 Audit&lt;/b&gt;&lt;br/&gt;Fertility &amp;amp; Logit" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="55" width="165" height="58" as="geometry" />
         </mxCell>
-        <mxCell id="n3_2" value="&lt;b&gt;Frozen Backbone&lt;/b&gt;&lt;br/&gt;12 Layers Locked&lt;br/&gt;110.0M (99.20%)&lt;br/&gt;Zero grad states" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;dashPattern=6 4;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.5;" vertex="1" parent="lane3">
-          <mxGeometry x="15" y="160" width="172" height="115" as="geometry" />
-        </mxCell>
-        <mxCell id="n3_3" value="&lt;b&gt;Trainable LoRA&lt;/b&gt;&lt;br/&gt;Q &amp;amp; V (r=8, alpha=32)&lt;br/&gt;h = W_S1 x + 4 BAx&lt;br/&gt;294,912 (0.27%)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.5;" vertex="1" parent="lane3">
-          <mxGeometry x="203" y="160" width="172" height="115" as="geometry" />
-        </mxCell>
-        <mxCell id="n3_4" value="&lt;b&gt;Unfrozen Head + Single-Anchor Adaptation&lt;/b&gt;&lt;br/&gt;• Classifier Head: 592,899 (0.53%) -&amp;gt; Total &lt;b&gt;0.8004%&lt;/b&gt; of 110.9M&lt;br/&gt;• Trained on 1 anchor (Chat. n=5,201; 5 ep, lr=3e-4)&lt;br/&gt;• Anchor-only val checkpointing (unseen targets isolated)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.5;" vertex="1" parent="lane3">
-          <mxGeometry x="15" y="310" width="360" height="125" as="geometry" />
-        </mxCell>
-        <mxCell id="n3_5" value="&lt;b&gt;Matched GPU Efficiency:&lt;/b&gt; 1,174 MB VRAM (-46.4% vs. Full-FT) | 82.2 s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10.5;strokeWidth=1.3;" vertex="1" parent="lane3">
-          <mxGeometry x="15" y="465" width="360" height="75" as="geometry" />
-        </mxCell>
-        <mxCell id="e3_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane3" source="n3_1" target="n3_2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane3" source="n3_1" target="n3_3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane3" source="n3_2" target="n3_4"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane3" source="n3_3" target="n3_4"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane3" source="n3_4" target="n3_5"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <!-- Swimlane 4: Evaluation & Controls -->
-        <mxCell id="lane4" value="4. Controlled 4×4 Evaluation" style="swimlane;whiteSpace=wrap;html=1;rounded=1;arcSize=8;fillColor=#f5eef8;strokeColor=#9673a6;fontStyle=1;fontSize=13;fontColor=#4c1130;startSize=32;strokeWidth=1.8;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="20" width="340" height="560" as="geometry" />
+        <mxCell id="a_xstd" value="&lt;b&gt;Standard Input&lt;/b&gt;&lt;br/&gt;&lt;i&gt;X_std&lt;/i&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=16;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="815" y="155" width="175" height="58" as="geometry" />
         </mxCell>
-        <mxCell id="n4_1" value="&lt;b&gt;Fair PEFT &amp;amp; Architecture Controls&lt;/b&gt;&lt;br/&gt;• Head-Only: 75.43% / 0.6928 F1&lt;br/&gt;• Raw -&amp;gt; LoRA: 77.56% / 0.7173 F1&lt;br/&gt;• Chat. Full-FT: 78.72% / 0.7248 F1&lt;br/&gt;• CANINE-C (pooled): 71.04% / 0.6559" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane4">
-          <mxGeometry x="15" y="50" width="310" height="115" as="geometry" />
+        <mxCell id="a_s1ft" value="&lt;b&gt;Stage 1 FT&lt;/b&gt;&lt;br/&gt;Learn &lt;i&gt;W_S1&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="155" width="165" height="58" as="geometry" />
         </mxCell>
-        <mxCell id="n4_2" value="&lt;b&gt;3-Seed Stage 1 -&amp;gt; Anchor LoRA (Ours)&lt;/b&gt;&lt;br/&gt;• Pooled: &lt;b&gt;80.57 ± 0.60% Acc / 0.7516 F1&lt;/b&gt;&lt;br/&gt;• Unseen Non-Anchor: &lt;b&gt;83.87%&lt;/b&gt; (+2.61)&lt;br/&gt;• McNemar vs. S2: &lt;b&gt;+88 fixes&lt;/b&gt; (p=9.17e-7)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.6;" vertex="1" parent="lane4">
-          <mxGeometry x="15" y="195" width="310" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="n4_3" value="&lt;b&gt;4×4 Baseline-Gain Transfer Matrix&lt;/b&gt;&lt;br/&gt;All 4 dialects evaluated as single anchors:&lt;br/&gt;• Largest gain in-domain (+12.20 Chat.)&lt;br/&gt;• Unseen non-anchor: &lt;b&gt;+2.61 to +3.23 pts&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane4">
-          <mxGeometry x="15" y="330" width="310" height="105" as="geometry" />
-        </mxCell>
-        <mxCell id="n4_4" value="&lt;b&gt;Cross-Backbone Verification&lt;/b&gt;&lt;br/&gt;• mBERT S1-&amp;gt;LoRA: &lt;b&gt;+0.0999 F1&lt;/b&gt; (3 seeds)&lt;br/&gt;• XLM-R sweep: 0.4344 -&amp;gt; &lt;b&gt;0.6746 F1&lt;/b&gt; (s42)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=8;strokeWidth=1.4;" vertex="1" parent="lane4">
-          <mxGeometry x="15" y="465" width="310" height="75" as="geometry" />
-        </mxCell>
-        <mxCell id="e4_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane4" source="n4_1" target="n4_2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e4_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane4" source="n4_2" target="n4_3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e4_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2d3748;strokeWidth=1.5;" edge="1" parent="lane4" source="n4_3" target="n4_4"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <!-- Inter-lane connectors -->
-        <mxCell id="c12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1f4e79;strokeWidth=2.0;" edge="1" parent="1" source="lane1" target="lane2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="c23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#7f6000;strokeWidth=2.0;" edge="1" parent="1" source="lane2" target="lane3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="c34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#274e13;strokeWidth=2.0;" edge="1" parent="1" source="lane3" target="lane4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ea_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="a_raw" target="a_nfc"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ea_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="a_nfc" target="a_split"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ea_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="a_split" target="a_clean"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ea_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="a_clean" target="a_norm"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ea_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="a_norm" target="a_rq1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ea_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="a_clean" target="a_xstd"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ea_7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="a_xstd" target="a_s1ft"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Panel (b) Container -->
+        <mxCell id="panel_b" value="(b) Stage-1-Initialized Anchor LoRA Architecture" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="20" y="275" width="1240" height="235" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b_xdial" value="&lt;b&gt;Dialect Input&lt;/b&gt;&lt;br/&gt;&lt;i&gt;X_dial&lt;/i&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=14;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="35" y="370" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b_tok" value="&lt;b&gt;Tokenizer&lt;/b&gt;&lt;br/&gt;&amp;amp; Embedding" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="195" y="370" width="118" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b_layer" value="Transformer Layer (×12, Q &amp;amp; V)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#94A3B8;dashed=1;dashPattern=3 3;strokeWidth=1.1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=5;fontStyle=2;fontSize=10;fontColor=#4B5563;" vertex="1" parent="1">
+          <mxGeometry x="348" y="305" width="368" height="185" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b_ws1" value="&lt;b&gt;W_S1&lt;/b&gt; ∈ ℝ^(d×d)&lt;br/&gt;(Frozen, ∇ = 0)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;dashed=1;dashPattern=6 4;strokeWidth=1.3;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="405" y="340" width="215" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="b_a" value="&lt;b&gt;A&lt;/b&gt;&lt;br/&gt;r×d, N" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;direction=south;size=12;fillColor=#E6EEF8;strokeColor=#2C5282;strokeWidth=1.5;fontSize=10;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="392" y="420" width="72" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="b_b" value="&lt;b&gt;B&lt;/b&gt;&lt;br/&gt;d×r, 0" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;direction=north;size=12;fillColor=#E6EEF8;strokeColor=#2C5282;strokeWidth=1.5;fontSize=10;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="488" y="420" width="72" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="b_scale" value="× α/r" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#E6EEF8;strokeColor=#2C5282;strokeWidth=1.3;fontSize=10;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="584" y="427" width="42" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="b_add" value="+" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FFFFFF;strokeColor=#1F2937;strokeWidth=1.4;fontSize=14;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="660" y="381" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b_head" value="&lt;b&gt;Classifier Head&lt;/b&gt;&lt;br/&gt;Unfrozen" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6EEF8;strokeColor=#2C5282;strokeWidth=1.5;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="820" y="370" width="135" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b_pred" value="&lt;b&gt;Prediction&lt;/b&gt;&lt;br/&gt;ŷ ∈ {-1,0,+1}" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=14;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="980" y="370" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b_eval" value="&lt;b&gt;4×4 Eval&lt;/b&gt;&lt;br/&gt;Unseen Dialects" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="370" width="115" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Cross-panel connectors -->
+        <mxCell id="cross_data" value="Anchor Split" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;fontSize=9.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="a_clean" target="b_xdial">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="675" y="250" />
+              <mxPoint x="100" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cross_init" value="Init W_S1 (freeze)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4B5563;strokeWidth=1.2;dashed=1;dashPattern=5 3;fontSize=9.5;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.88;entryY=0;" edge="1" parent="1" source="a_s1ft" target="b_ws1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1137" y="264" />
+              <mxPoint x="594" y="264" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Panel (b) edges -->
+        <mxCell id="eb_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="b_xdial" target="b_tok"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eb_2" value="x" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="b_tok" target="b_ws1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="370" y="400" />
+              <mxPoint x="370" y="366" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="b_tok" target="b_a">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="370" y="400" />
+              <mxPoint x="370" y="448" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2C5282;strokeWidth=1.2;" edge="1" parent="1" source="b_a" target="b_b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eb_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2C5282;strokeWidth=1.2;" edge="1" parent="1" source="b_b" target="b_scale"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eb_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="b_ws1" target="b_add">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="679" y="366" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb_7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#2C5282;strokeWidth=1.2;" edge="1" parent="1" source="b_scale" target="b_add">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="679" y="448" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb_8" value="h = W_S1 x + (α/r)BAx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;fontSize=9.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="b_add" target="b_head"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eb_9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="b_head" target="b_pred"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eb_10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1F2937;strokeWidth=1.2;" edge="1" parent="1" source="b_pred" target="b_eval"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -140,210 +200,260 @@ def write_drawio_xml(out_path: str):
         f.write(xml)
 
 
-def draw_box(ax, x, y, w, h, title, lines, bg, bd, title_color="#111827", dashed=False, lw=1.25):
-    ls = (0, (4, 3)) if dashed else "-"
-    box = FancyBboxPatch(
-        (x, y), w, h,
-        boxstyle="round,pad=0.0,rounding_size=0.14",
-        facecolor=bg, edgecolor=bd, linewidth=lw, linestyle=ls, zorder=3
-    )
-    ax.add_patch(box)
-    ax.text(
-        x + 0.14, y + h - 0.16, title,
-        ha="left", va="top", fontsize=8.0, fontweight="bold",
-        color=title_color, family="DejaVu Sans", zorder=4
-    )
-    line_y = y + h - 0.44
-    step = (h - 0.52) / max(1, len(lines))
-    for ln in lines:
-        ax.text(
-            x + 0.14, line_y, ln,
-            ha="left", va="top", fontsize=6.9,
-            color="#1f2937", family="DejaVu Sans", zorder=4
-        )
-        line_y -= min(step, 0.27)
+def draw_cylinder(ax, xc, yc, w, h, title, sub="", fc=COLORS["neutral_bg"], ec=COLORS["neutral_bd"], lw=1.15):
+    """Draw a classic CS data-store cylinder."""
+    ry = h * 0.14
+    x0, x1 = xc - w / 2, xc + w / 2
+    y_bot, y_top = yc - h / 2 + ry, yc + h / 2 - ry
+
+    angles = np.linspace(np.pi, 2 * np.pi, 40)
+    arc_pts = [(xc + (w / 2) * np.cos(a), y_bot + ry * np.sin(a)) for a in angles]
+    path_pts = [(x0, y_top)] + arc_pts + [(x1, y_top), (x0, y_top)]
+    codes = [Path.MOVETO] + [Path.LINETO] * (len(path_pts) - 2) + [Path.CLOSEPOLY]
+    body = PathPatch(Path(path_pts, codes), facecolor=fc, edgecolor=ec, linewidth=lw, zorder=3)
+    ax.add_patch(body)
+
+    top_cap = Ellipse((xc, y_top), width=w, height=2 * ry, facecolor=fc, edgecolor=ec, linewidth=lw, zorder=4)
+    ax.add_patch(top_cap)
+
+    ax.text(xc, yc + 0.03, title, ha="center", va="center", fontsize=8.5, fontweight="bold", color=COLORS["ink"], zorder=5)
+    if sub:
+        ax.text(xc, yc - 0.14, sub, ha="center", va="center", fontsize=7.5, color=COLORS["muted_ink"], zorder=5)
 
 
-def draw_lane(ax, x, y, w, h, header, bg, bd, hdr_bg):
-    outer = FancyBboxPatch(
-        (x, y), w, h,
-        boxstyle="round,pad=0.0,rounding_size=0.18",
-        facecolor=bg, edgecolor=bd, linewidth=1.6, zorder=1
-    )
-    ax.add_patch(outer)
-    hdr_h = 0.46
-    hdr = FancyBboxPatch(
-        (x, y + h - hdr_h), w, hdr_h,
-        boxstyle="round,pad=0.0,rounding_size=0.14",
-        facecolor=hdr_bg, edgecolor=bd, linewidth=1.2, zorder=2
-    )
-    ax.add_patch(hdr)
-    ax.text(
-        x + w / 2.0, y + h - hdr_h / 2.0, header,
-        ha="center", va="center", fontsize=8.6, fontweight="bold",
-        color="white", family="DejaVu Sans", zorder=3
-    )
-
-
-def arrow(ax, x1, y1, x2, y2, color="#2d3748", lw=1.4):
-    a = FancyArrowPatch(
-        (x1, y1), (x2, y2),
-        arrowstyle="-|>", mutation_scale=11,
-        color=color, linewidth=lw, zorder=5
-    )
-    ax.add_patch(a)
-
-
-def render_diagram():
-    fig, ax = plt.subplots(figsize=(15.4, 5.9))
-    ax.set_xlim(0, 17.2)
-    ax.set_ylim(0, 6.45)
-    ax.axis("off")
-    fig.patch.set_facecolor("white")
-
-    lanes = [
-        (0.15, 0.15, 3.70, 6.15, "1. Zero-Overlap Data Curation", PALETTE["lane1_bg"], PALETTE["lane1_bd"], PALETTE["lane1_hdr"]),
-        (4.20, 0.15, 3.75, 6.15, "2. RQ1: Tokenization & Error Audit", PALETTE["lane2_bg"], PALETTE["lane2_bd"], PALETTE["lane2_hdr"]),
-        (8.30, 0.15, 4.55, 6.15, "3. RQ2: Stage-1-Initialized Anchor LoRA", PALETTE["lane3_bg"], PALETTE["lane3_bd"], PALETTE["lane3_hdr"]),
-        (13.20, 0.15, 3.85, 6.15, "4. Controlled 4x4 Evaluation", PALETTE["lane4_bg"], PALETTE["lane4_bd"], PALETTE["lane4_hdr"]),
+def draw_parallelogram(ax, xc, yc, w, h, title, sub="", skew=0.14, fc=COLORS["neutral_bg"], ec=COLORS["neutral_bd"], lw=1.15):
+    """Draw a standard ISO-5807 I/O parallelogram."""
+    x0, x1 = xc - w / 2, xc + w / 2
+    y0, y1 = yc - h / 2, yc + h / 2
+    s = skew / 2.0
+    pts = [
+        (x0 + s, y1),
+        (x1 + s, y1),
+        (x1 - s, y0),
+        (x0 - s, y0),
     ]
-    for lx, ly, lw, lh, ltitle, lbg, lbd, lhdr in lanes:
-        draw_lane(ax, lx, ly, lw, lh, ltitle, lbg, lbd, lhdr)
+    poly = Polygon(pts, closed=True, facecolor=fc, edgecolor=ec, linewidth=lw, zorder=3)
+    ax.add_patch(poly)
+    if sub:
+        ax.text(xc, yc + 0.09, title, ha="center", va="center", fontsize=8.5, fontweight="bold", color=COLORS["ink"], zorder=4)
+        ax.text(xc, yc - 0.11, sub, ha="center", va="center", fontsize=8.0, color=COLORS["muted_ink"], zorder=4)
+    else:
+        ax.text(xc, yc, title, ha="center", va="center", fontsize=8.5, fontweight="bold", color=COLORS["ink"], zorder=4)
 
-    # Lane 1
-    x1, w1 = 0.30, 3.40
-    draw_box(ax, x1, 4.35, w1, 1.28, "Three Public Regional Corpora", [
-        "• Chattogram Sent: 4,030 native pairs",
-        "• ANUBHUTI: 9,892 (7 emotions -> 3-class)",
-        "• SAPTAK: 2,943 (981 manual Std labels)",
-    ], PALETTE["box_blue_bg"], PALETTE["box_blue_bd"], "#1f4e79")
 
-    draw_box(ax, x1, 2.85, w1, 1.22, "Canonical Cleaning & Deduplication", [
-        "• Unicode NFC (8,341 raw strings fixed)",
-        "• Drop 23 conflict + 436 SHA-256 dups",
-        "• Clean Corpus: 16,865 rows (7,475 groups)",
-    ], "#ffffff", PALETTE["box_blue_bd"], "#1f4e79")
+def draw_rect(ax, xc, yc, w, h, title, sub="", fc=COLORS["neutral_bg"], ec=COLORS["neutral_bd"], lw=1.15, ls="-"):
+    """Draw a standard CS process or neural layer rectangle."""
+    rect = Rectangle(
+        (xc - w / 2, yc - h / 2), w, h,
+        facecolor=fc, edgecolor=ec, linewidth=lw, linestyle=ls, zorder=3
+    )
+    ax.add_patch(rect)
+    if sub:
+        ax.text(xc, yc + 0.09, title, ha="center", va="center", fontsize=8.5, fontweight="bold", color=COLORS["ink"], zorder=4)
+        ax.text(xc, yc - 0.11, sub, ha="center", va="center", fontsize=7.6, color=COLORS["muted_ink"], zorder=4)
+    else:
+        ax.text(xc, yc, title, ha="center", va="center", fontsize=8.5, fontweight="bold", color=COLORS["ink"], zorder=4)
 
-    draw_box(ax, x1, 1.35, w1, 1.22, "Group-Stratified 80 / 10 / 10 Split", [
-        "• Grouped strictly by Standard_Text hash",
-        "• Train 13,491 | Val 1,689 | Test 1,685",
-        "• Verified 0.00% exact-group overlap",
-    ], PALETTE["box_blue_bg"], PALETTE["box_blue_bd"], "#1f4e79")
 
-    draw_box(ax, x1, 0.30, w1, 0.80, "Model-Specific Preprocessing", [
-        "• BanglaBERT: csebuetnlp/normalizer",
-        "• mBERT / XLM-R / CANINE-C: NFC text",
-    ], PALETTE["box_gray_bg"], PALETTE["box_gray_bd"], "#374151")
+def draw_trapezoid(ax, xc, yc, w, h_left, h_right, title, sub="", fc=COLORS["train_bg"], ec=COLORS["train_bd"], lw=1.45):
+    """Draw LoRA down-projection (h_left > h_right) or up-projection (h_left < h_right) trapezoid."""
+    x0, x1 = xc - w / 2, xc + w / 2
+    pts = [
+        (x0, yc + h_left / 2),
+        (x1, yc + h_right / 2),
+        (x1, yc - h_right / 2),
+        (x0, yc - h_left / 2),
+    ]
+    poly = Polygon(pts, closed=True, facecolor=fc, edgecolor=ec, linewidth=lw, zorder=3)
+    ax.add_patch(poly)
+    ax.text(xc, yc + 0.08, title, ha="center", va="center", fontsize=9.0, fontweight="bold", color=COLORS["ink"], zorder=4)
+    if sub:
+        ax.text(xc, yc - 0.10, sub, ha="center", va="center", fontsize=7.4, color=COLORS["train_bd"], zorder=4)
 
-    arrow(ax, x1 + w1 / 2, 4.35, x1 + w1 / 2, 4.07)
-    arrow(ax, x1 + w1 / 2, 2.85, x1 + w1 / 2, 2.57)
-    arrow(ax, x1 + w1 / 2, 1.35, x1 + w1 / 2, 1.10)
 
-    # Lane 2
-    x2, w2 = 4.35, 3.45
-    draw_box(ax, x2, 4.35, w2, 1.28, "Multi-Tokenizer Fertility Profiling", [
-        "• BanglaBERT WP: Chat. +48.61% inflation",
-        "• XLM-R SP: Chat. +40.45% | mBERT +19.36%",
-        "• Hierarchy: Mym < Noak < Sylh << Chat.",
-    ], PALETTE["box_amber_bg"], PALETTE["box_amber_bd"], "#7f6000")
+def draw_polyline_arrow(ax, pts, color=COLORS["ink"], lw=1.15, ls="-", label=None, label_pos=None):
+    """Draw clean orthogonal multi-segment line ending with a crisp arrowhead."""
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    if len(pts) > 2:
+        ax.plot(xs[:-1], ys[:-1], color=color, linewidth=lw, linestyle=ls, solid_capstyle="butt", zorder=2)
+    arrow = FancyArrowPatch(
+        pts[-2], pts[-1],
+        arrowstyle="-|>,head_length=4.5,head_width=2.6",
+        color=color, linewidth=lw, linestyle=ls,
+        shrinkA=0, shrinkB=0, zorder=2
+    )
+    ax.add_patch(arrow)
+    if label and label_pos:
+        ax.text(
+            label_pos[0], label_pos[1], label,
+            ha="center", va="center", fontsize=7.8, color=color,
+            bbox=dict(boxstyle="square,pad=0.14", facecolor="#FFFFFF", edgecolor="none"),
+            zorder=6
+        )
 
-    draw_box(ax, x2, 2.85, w2, 1.22, "Stage 1 -> Stage 2 Zero-Shot Drop", [
-        "• Stage 1 Standard FT: 83.24% / 0.7887 F1",
-        "• Stage 2 Dialect Zero-Shot: 74.26% / 0.6217",
-        "• BUET Normalizer: +0.0578 F1 (seed 42)",
-    ], "#ffffff", PALETTE["box_amber_bd"], "#7f6000")
 
-    draw_box(ax, x2, 1.35, w2, 1.22, "Controlled Error Modeling (N=1,685)", [
-        "• Macro r = 0.9907 (s42) | r = 0.9942 (3-seed)",
-        "• Logit Edit Dist: OR = 7.28 (p = 1.2e-4)",
-        "• Logit Fertility: OR = 1.59 (p = 0.0401)",
-    ], PALETTE["box_amber_bg"], PALETTE["box_amber_bd"], "#7f6000")
+def render_publication_figure(out_dir: str) -> None:
+    """Render crisp vector PDF/SVG and 400 DPI PNG."""
+    plt.rcParams["font.family"] = "DejaVu Sans"
+    plt.rcParams["mathtext.fontset"] = "stix"
 
-    draw_box(ax, x2, 0.30, w2, 0.80, "200-Sample 4-Way Error Taxonomy", [
-        "• Subword 29.5% (55.9% fixed) | OOV 28.0%",
-        "• Pragmatic 27.5% | Negation Shift 15.0%",
-    ], PALETTE["box_gray_bg"], PALETTE["box_gray_bd"], "#374151")
+    fig, ax = plt.subplots(figsize=(12.8, 5.6))
+    ax.set_xlim(0, 12.8)
+    ax.set_ylim(0, 5.6)
+    ax.axis("off")
+    fig.patch.set_facecolor(COLORS["bg"])
 
-    arrow(ax, x2 + w2 / 2, 4.35, x2 + w2 / 2, 4.07)
-    arrow(ax, x2 + w2 / 2, 2.85, x2 + w2 / 2, 2.57)
-    arrow(ax, x2 + w2 / 2, 1.35, x2 + w2 / 2, 1.10)
+    # ------------------------------------------------------------------
+    # Panel Frames
+    # ------------------------------------------------------------------
+    panel_a = Rectangle((0.15, 3.22), 12.50, 2.22, facecolor="none", edgecolor=COLORS["panel_bd"], linewidth=1.1, zorder=1)
+    ax.add_patch(panel_a)
+    ax.text(0.28, 5.24, "(a) Data-Flow & Diagnostic Pipeline", ha="left", va="center",
+            fontsize=10.0, fontweight="bold", color=COLORS["panel_title"], zorder=5)
 
-    # Lane 3 (extra wide for clear text margins)
-    x3, w3 = 8.45, 4.25
-    draw_box(ax, x3, 4.65, w3, 0.98, "Stage 1 Canonical Checkpoint (W_S1)", [
-        "• Fine-tuned on Std Bangla (n = 13,491; 3 ep, lr=2e-5)",
-        "• Preserves formal syntactic & polarity geometry",
-    ], PALETTE["box_green_bg"], PALETTE["box_green_bd"], "#274e13")
+    panel_b = Rectangle((0.15, 0.56), 12.50, 2.34, facecolor="none", edgecolor=COLORS["panel_bd"], linewidth=1.1, zorder=1)
+    ax.add_patch(panel_b)
+    ax.text(0.28, 2.70, "(b) Stage-1-Initialized Anchor LoRA Architecture", ha="left", va="center",
+            fontsize=10.0, fontweight="bold", color=COLORS["panel_title"], zorder=5)
 
-    draw_box(ax, x3, 2.85, 2.05, 1.48, "Frozen Backbone", [
-        "12 Layers Locked",
-        "110.0M (99.20%)",
-        "Zero grad states",
-        "Preserves W_S1",
-    ], PALETTE["box_gray_bg"], PALETTE["box_gray_bd"], "#374151", dashed=True, lw=1.4)
+    # ------------------------------------------------------------------
+    # Panel (a) Nodes
+    # ------------------------------------------------------------------
+    y_main = 4.14
+    draw_cylinder(ax, 0.96, y_main, 1.30, 0.72, "Raw Corpora", "3 Regional Sets")
+    draw_rect(ax, 2.86, y_main, 1.44, 0.62, "NFC & Dedup", "SHA-256 Clean")
+    draw_rect(ax, 4.82, y_main, 1.38, 0.62, "Group Split", "80 / 10 / 10")
+    draw_cylinder(ax, 6.72, y_main, 1.30, 0.72, "Clean Splits", "0% Overlap")
 
-    draw_box(ax, x3 + 2.20, 2.85, 2.05, 1.48, "Trainable LoRA", [
-        "Q & V projections",
-        "r = 8, alpha = 32",
-        "h = W_S1 x + 4 BAx",
-        "294,912 (0.27%)",
-    ], PALETTE["box_amber_bg"], PALETTE["box_amber_bd"], "#7f6000", lw=1.4)
+    # Right-side parallel tracks
+    y_top = 4.62
+    y_bot = 3.66
+    draw_rect(ax, 9.10, y_top, 1.72, 0.56, "BUET / NFC Norm.", "Text Stream")
+    draw_rect(ax, 11.50, y_top, 1.66, 0.56, "RQ1 Audit", "Fertility & Logit")
 
-    draw_box(ax, x3, 1.25, w3, 1.28, "Unfrozen Head + Anchor Adaptation", [
-        "• Head: 592,899 (0.53%) -> Total 0.8004% of 110.9M",
-        "• 1 anchor only (Chat. n=5,201; 5 ep, lr=3e-4)",
-        "• Anchor-only val selection (targets unseen)",
-    ], PALETTE["box_red_bg"], PALETTE["box_red_bd"], "#8b1d1d", lw=1.4)
+    draw_parallelogram(ax, 9.10, y_bot, 1.74, 0.56, "Standard Input", r"$X_{\mathrm{std}}$", skew=0.20)
+    draw_rect(ax, 11.50, y_bot, 1.66, 0.56, "Stage 1 FT", r"Learn $W_{\mathrm{S1}}$")
 
-    draw_box(ax, x3, 0.30, w3, 0.72, "Matched A100 Hardware Footprint", [
-        "• Peak VRAM: 1,174 MB (-46.4% vs. Full-FT) | 82.2 s",
-    ], PALETTE["box_green_bg"], PALETTE["box_green_bd"], "#274e13")
+    # Panel (a) Arrows
+    draw_polyline_arrow(ax, [(1.61, y_main), (2.14, y_main)])
+    draw_polyline_arrow(ax, [(3.58, y_main), (4.13, y_main)])
+    draw_polyline_arrow(ax, [(5.51, y_main), (6.07, y_main)])
+    # Branch from Clean Splits
+    draw_polyline_arrow(ax, [(7.37, y_main), (7.74, y_main), (7.74, y_top), (8.24, y_top)])
+    draw_polyline_arrow(ax, [(9.96, y_top), (10.67, y_top)])
+    draw_polyline_arrow(ax, [(7.37, y_main), (7.74, y_main), (7.74, y_bot), (8.18, y_bot)])
+    draw_polyline_arrow(ax, [(10.02, y_bot), (10.67, y_bot)])
 
-    arrow(ax, x3 + 1.02, 4.65, x3 + 1.02, 4.33)
-    arrow(ax, x3 + 3.22, 4.65, x3 + 3.22, 4.33)
-    arrow(ax, x3 + 1.02, 2.85, x3 + 1.02, 2.53)
-    arrow(ax, x3 + 3.22, 2.85, x3 + 3.22, 2.53)
-    arrow(ax, x3 + w3 / 2, 1.25, x3 + w3 / 2, 1.02)
+    # ------------------------------------------------------------------
+    # Panel (b) Nodes
+    # ------------------------------------------------------------------
+    yb_mid = 1.56
+    draw_parallelogram(ax, 0.88, yb_mid, 1.24, 0.58, "Dialect Input", r"$X_{\mathrm{dial}}$", skew=0.18)
+    draw_rect(ax, 2.40, yb_mid, 1.18, 0.58, "Tokenizer", "& Embedding")
 
-    # Lane 4
-    x4, w4 = 13.35, 3.55
-    draw_box(ax, x4, 4.25, w4, 1.38, "Fair PEFT & Architecture Controls", [
-        "• Head-Only: 75.43% / 0.6928 F1",
-        "• Raw -> LoRA: 77.56% / 0.7173 F1",
-        "• Chattogram Full-FT: 78.72% / 0.7248 F1",
-        "• CANINE-C (pooled, s42): 71.04% / 0.6559",
-    ], "#ffffff", PALETTE["box_purple_bd"], "#4c1130")
+    # Grouping box for Transformer Layer (left-aligned title leaves top-right clear for dashed arrow!)
+    layer_box = Rectangle((3.36, 0.72), 3.68, 1.72, facecolor="none", edgecolor=COLORS["group_bd"],
+                          linewidth=1.05, linestyle=":", zorder=2)
+    ax.add_patch(layer_box)
+    ax.text(3.46, 2.31, r"Transformer Layer ($\times 12$, Q & V)", ha="left", va="center",
+            fontsize=8.0, style="italic", color=COLORS["muted_ink"], zorder=4)
 
-    draw_box(ax, x4, 2.75, w4, 1.22, "Stage 1 -> Anchor LoRA (3 Seeds)", [
-        "• Pooled: 80.57% Acc / 0.7516 F1",
-        "• Unseen Non-Anchor: 83.87% (+2.61)",
-        "• McNemar vs. S2: +88 fixes (p = 9.2e-7)",
-    ], PALETTE["box_purple_bg"], PALETTE["box_purple_bd"], "#4c1130", lw=1.5)
+    # Frozen path
+    y_frz = 1.92
+    draw_rect(ax, 5.04, y_frz, 2.08, 0.50, r"$W_{\mathrm{S1}} \in \mathbb{R}^{d \times d}$",
+              r"Frozen ($\nabla = 0$)", fc=COLORS["frozen_bg"], ec=COLORS["frozen_bd"], lw=1.25, ls="--")
 
-    draw_box(ax, x4, 1.30, w4, 1.18, "4x4 Baseline-Gain Transfer Matrix", [
-        "• All 4 dialects tested as single anchors",
-        "• Largest gain in-domain (+12.20 Chat.)",
-        "• Unseen non-anchor: +2.61 to +3.23 pts",
-    ], "#ffffff", PALETTE["box_purple_bd"], "#4c1130")
+    # Trainable LoRA path
+    y_lora = 1.10
+    draw_trapezoid(ax, 4.18, y_lora, 0.72, 0.56, 0.30, r"$A$", r"$r{\times}d,\,\mathcal{N}$")
+    draw_trapezoid(ax, 5.12, y_lora, 0.72, 0.30, 0.56, r"$B$", r"$d{\times}r,\,\mathbf{0}$")
 
-    draw_box(ax, x4, 0.30, w4, 0.78, "Cross-Backbone Verification", [
-        "• mBERT S1->LoRA: +0.0999 F1 (3 seeds)",
-        "• XLM-R sweep: 0.4344 -> 0.6746 (s42)",
-    ], PALETTE["box_gray_bg"], PALETTE["box_gray_bd"], "#374151")
+    scale_circle = Circle((5.96, y_lora), radius=0.21, facecolor=COLORS["train_bg"],
+                          edgecolor=COLORS["train_bd"], linewidth=1.35, zorder=3)
+    ax.add_patch(scale_circle)
+    ax.text(5.96, y_lora, r"$\times\frac{\alpha}{r}$", ha="center", va="center",
+            fontsize=8.8, fontweight="bold", color=COLORS["ink"], zorder=4)
 
-    arrow(ax, x4 + w4 / 2, 4.25, x4 + w4 / 2, 3.97)
-    arrow(ax, x4 + w4 / 2, 2.75, x4 + w4 / 2, 2.48)
-    arrow(ax, x4 + w4 / 2, 1.30, x4 + w4 / 2, 1.08)
+    # Addition node
+    add_circle = Circle((6.72, yb_mid), radius=0.18, facecolor="#FFFFFF",
+                        edgecolor=COLORS["ink"], linewidth=1.35, zorder=3)
+    ax.add_patch(add_circle)
+    ax.text(6.72, yb_mid + 0.005, "+", ha="center", va="center",
+            fontsize=12.5, fontweight="bold", color=COLORS["ink"], zorder=4)
 
-    # Inter-lane flow arrows
-    arrow(ax, 3.85, 3.22, 4.20, 3.22, color=PALETTE["lane1_hdr"], lw=2.2)
-    arrow(ax, 7.95, 3.22, 8.30, 3.22, color=PALETTE["lane2_hdr"], lw=2.2)
-    arrow(ax, 12.85, 3.22, 13.20, 3.22, color=PALETTE["lane3_hdr"], lw=2.2)
+    # Downstream trainable head, output, evaluation (with comfortable padding!)
+    draw_rect(ax, 8.95, yb_mid, 1.38, 0.58, "Classifier Head", "Unfrozen",
+              fc=COLORS["train_bg"], ec=COLORS["train_bd"], lw=1.45)
+    draw_parallelogram(ax, 10.52, yb_mid, 1.30, 0.58, "Prediction", r"$\hat{y}\in\{-1,0,+1\}$", skew=0.16)
+    draw_rect(ax, 11.96, yb_mid, 1.18, 0.58, r"4$\times$4 Eval", "Unseen Dialects")
 
-    os.makedirs(FIG_DIR, exist_ok=True)
-    for ext in ("png", "pdf", "svg"):
-        out_p = os.path.join(FIG_DIR, f"fig_methodology_workflow.{ext}")
-        fig.savefig(out_p, dpi=400, bbox_inches="tight", facecolor="white")
+    # Panel (b) Arrows
+    draw_polyline_arrow(ax, [(1.55, yb_mid), (1.81, yb_mid)])
+    # Split x -> frozen and LoRA
+    draw_polyline_arrow(ax, [(2.99, yb_mid), (3.58, yb_mid), (3.58, y_frz), (4.00, y_frz)],
+                        label=r"$x$", label_pos=(3.18, yb_mid + 0.14))
+    draw_polyline_arrow(ax, [(3.58, yb_mid), (3.58, y_lora), (3.82, y_lora)])
+    # LoRA internal arrows
+    draw_polyline_arrow(ax, [(4.54, y_lora), (4.76, y_lora)], color=COLORS["train_bd"], lw=1.2)
+    draw_polyline_arrow(ax, [(5.48, y_lora), (5.75, y_lora)], color=COLORS["train_bd"], lw=1.2)
+    # Merge into (+)
+    draw_polyline_arrow(ax, [(6.08, y_frz), (6.72, y_frz), (6.72, yb_mid + 0.18)])
+    draw_polyline_arrow(ax, [(6.17, y_lora), (6.72, y_lora), (6.72, yb_mid - 0.18)], color=COLORS["train_bd"], lw=1.2)
+    # (+) -> Head with generous 1.36-unit gap for equation label!
+    draw_polyline_arrow(ax, [(6.90, yb_mid), (8.26, yb_mid)],
+                        label=r"$h = W_{\mathrm{S1}} x + \frac{\alpha}{r} B A x$",
+                        label_pos=(7.60, yb_mid + 0.24))
+    draw_polyline_arrow(ax, [(9.64, yb_mid), (9.83, yb_mid)])
+    draw_polyline_arrow(ax, [(11.21, yb_mid), (11.37, yb_mid)])
+
+    # ------------------------------------------------------------------
+    # Inter-Panel Connectors (Zero Text Collisions, Zero Crossings)
+    # ------------------------------------------------------------------
+    # Clean Splits -> Dialect Input
+    draw_polyline_arrow(
+        ax,
+        [(6.72, 3.78), (6.72, 3.11), (0.88, 3.11), (0.88, 1.85)],
+        color=COLORS["ink"], lw=1.15, ls="-",
+        label="Anchor Split", label_pos=(3.80, 3.11)
+    )
+    # Stage 1 FT -> Frozen W_S1 (drops at x=5.94, strictly right of Panel (b) title & Transformer title!)
+    draw_polyline_arrow(
+        ax,
+        [(11.50, 3.38), (11.50, 2.98), (5.94, 2.98), (5.94, 2.17)],
+        color=COLORS["muted_ink"], lw=1.15, ls="--",
+        label=r"Init $W_{\mathrm{S1}}$ (freeze)", label_pos=(8.85, 2.98)
+    )
+
+    # ------------------------------------------------------------------
+    # Compact Bottom Shape & Parameter Legend
+    # ------------------------------------------------------------------
+    yl = 0.25
+    draw_cylinder(ax, 1.10, yl, 0.34, 0.24, "", "", lw=0.95)
+    ax.text(1.35, yl, "Corpus / Store", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
+
+    draw_parallelogram(ax, 2.90, yl, 0.38, 0.20, "", "", skew=0.08, lw=0.95)
+    ax.text(3.18, yl, "Data I/O", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
+
+    draw_rect(ax, 4.45, yl, 0.36, 0.20, "", "", lw=0.95)
+    ax.text(4.71, yl, "Process / Layer", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
+
+    draw_trapezoid(ax, 6.42, yl, 0.34, 0.22, 0.11, "", "", lw=1.05)
+    ax.text(6.67, yl, "Low-Rank Proj.", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
+
+    draw_rect(ax, 8.38, yl, 0.36, 0.20, "", "", fc=COLORS["frozen_bg"], ec=COLORS["frozen_bd"], lw=1.1, ls="--")
+    ax.text(8.64, yl, "Frozen (99.2%)", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
+
+    draw_rect(ax, 10.42, yl, 0.36, 0.20, "", "", fc=COLORS["train_bg"], ec=COLORS["train_bd"], lw=1.2, ls="-")
+    ax.text(10.68, yl, "Trainable (0.8%)", ha="left", va="center", fontsize=8.0, color=COLORS["ink"])
+
+    os.makedirs(out_dir, exist_ok=True)
+    for ext, dpi in [("pdf", None), ("svg", None), ("png", 400)]:
+        out_path = os.path.join(out_dir, f"fig_methodology_workflow.{ext}")
+        kwargs = {"bbox_inches": "tight", "pad_inches": 0.05, "facecolor": COLORS["bg"]}
+        if dpi is not None:
+            kwargs["dpi"] = dpi
+        fig.savefig(out_path, **kwargs)
     plt.close(fig)
 
 
@@ -351,8 +461,8 @@ def main():
     os.makedirs(FIG_DIR, exist_ok=True)
     drawio_path = os.path.join(FIG_DIR, "fig_methodology_workflow.drawio")
     write_drawio_xml(drawio_path)
-    render_diagram()
-    print("Generated editable draw.io XML + 400 DPI PNG/PDF/SVG in:", FIG_DIR)
+    render_publication_figure(FIG_DIR)
+    print(f"Generated draw.io XML + PDF/SVG/PNG in: {FIG_DIR}")
 
 
 if __name__ == "__main__":

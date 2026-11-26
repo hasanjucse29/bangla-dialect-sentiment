@@ -6,7 +6,7 @@ ISO-5807 / neural-architecture shapes and crisp vector/raster outputs:
   1. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.drawio
   2. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.pdf
   3. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.svg
-  4. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.png (400 DPI)
+  4. manuscripts/01_TALLIP_Short_Note/figures/fig_methodology_workflow.png (600 DPI)
 """
 
 import os
@@ -294,7 +294,7 @@ def draw_polyline_arrow(ax, pts, color=COLORS["ink"], lw=1.15, ls="-", label=Non
 
 
 def render_publication_figure(out_dir: str) -> None:
-    """Render crisp vector PDF/SVG and 400 DPI PNG."""
+    """Render crisp vector PDF/SVG and 600 DPI PNG."""
     plt.rcParams["font.family"] = "DejaVu Sans"
     plt.rcParams["mathtext.fontset"] = "stix"
 
@@ -426,7 +426,7 @@ def render_publication_figure(out_dir: str) -> None:
     )
 
     os.makedirs(out_dir, exist_ok=True)
-    for ext, dpi in [("pdf", None), ("svg", None), ("png", 400)]:
+    for ext, dpi in [("pdf", None), ("svg", None), ("png", 600)]:
         out_path = os.path.join(out_dir, f"fig_methodology_workflow.{ext}")
         kwargs = {"bbox_inches": "tight", "pad_inches": 0.05, "facecolor": COLORS["bg"]}
         if dpi is not None:

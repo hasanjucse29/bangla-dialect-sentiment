@@ -1,5 +1,5 @@
 """
-Publication-Grade 400 DPI Luminance-Ordered & Grayscale-Safe Figure Generator (TALLIP V2)
+Publication-Grade 600 DPI Luminance-Ordered & Grayscale-Safe Figure Generator (TALLIP V2)
 =========================================================================================
 Reads directly from `results/tallip_v2/MASTER_TALLIP_V2_RESULTS.json` and exports:
   1. `manuscripts/01_TALLIP_Short_Note/figures/fig_multi_tokenizer_fragmentation.{png,pdf}`
@@ -162,7 +162,7 @@ def make_figure1_fragmentation_and_logit(data: dict):
     os.makedirs(FIG_DIR, exist_ok=True)
     for ext in ("png", "pdf"):
         out_p = os.path.join(FIG_DIR, f"fig_multi_tokenizer_fragmentation.{ext}")
-        fig.savefig(out_p, dpi=400, bbox_inches="tight", facecolor="white")
+        fig.savefig(out_p, dpi=600, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
 
@@ -284,7 +284,7 @@ def make_figure2_transfer_matrix(data: dict):
     os.makedirs(FIG_DIR, exist_ok=True)
     for ext in ("png", "pdf"):
         out_p = os.path.join(FIG_DIR, f"fig_per_dialect_transfer_matrix.{ext}")
-        fig.savefig(out_p, dpi=400, bbox_inches="tight", facecolor="white")
+        fig.savefig(out_p, dpi=600, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
 
@@ -293,7 +293,7 @@ def main():
         data = json.load(f)
     make_figure1_fragmentation_and_logit(data)
     make_figure2_transfer_matrix(data)
-    print("Generated 400 DPI V2 luminance-ordered/grayscale-safe figures in:", FIG_DIR)
+    print("Generated 600 DPI V2 luminance-ordered/grayscale-safe figures in:", FIG_DIR)
 
 
 if __name__ == "__main__":

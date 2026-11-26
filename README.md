@@ -1,8 +1,8 @@
-# Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation Across the Bangla Dialect Continuum
+# Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects
 
-Official reproducibility repository for our ACM TALLIP Technical Note:
+Official reproducibility repository for our ACM TALLIP Short Paper:
 
-> **Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation Across the Bangla Dialect Continuum**  
+> **Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects**  
 > Md Hasan Al Mamun*, Fatima Binte Aziz, Nadia Afrin Ritu, and Md. Musfique Anwar  
 > Department of Computer Science and Engineering, Jahangirnagar University, Savar, Dhaka 1342, Bangladesh  
 > (\*Corresponding author: `hasan.stu20195@juniv.edu`)
@@ -39,7 +39,7 @@ Pretrained Bengali transformer encoders (`BanglaBERT`, `mBERT`, and `XLM-RoBERTa
 │       ├── build_clean_v2_dataset.py            # Reproducible dataset harmonization, NFC, dedup & group splitting
 │       ├── build_tallip_v2_notebook.py          # Deterministic generator for TALLIP_V2_Master_Experiments.ipynb
 │       ├── classify_200_errors_v2.py            # Deterministic 4-way linguistic error taxonomy classifier
-│       └── generate_tallip_v2_figures.py        # Publication-grade 400 DPI colorblind-safe figure generator
+│       └── generate_tallip_v2_figures.py        # Publication-grade 600 DPI grayscale-safe figure generator
 ├── requirements.txt                             # Python package dependencies
 ├── LICENSE                                      # CC BY-NC-SA 4.0 data/annotations & MIT code license
 └── README.md
@@ -85,7 +85,7 @@ If you use this benchmark split, error taxonomy, or adaptation pipeline, please 
 ```bibtex
 @article{Mamun_2026_TALLIP,
   author  = {Mamun, Md Hasan Al and Aziz, Fatima Binte and Ritu, Nadia Afrin and Anwar, Md. Musfique},
-  title   = {Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation Across the Bangla Dialect Continuum},
+  title   = {Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects},
   journal = {ACM Transactions on Asian and Low-Resource Language Information Processing (TALLIP)},
   year    = {2026},
   note    = {Submitted}

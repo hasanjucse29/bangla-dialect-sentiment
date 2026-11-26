@@ -16,7 +16,7 @@ Pretrained Bengali transformer encoders (`BanglaBERT`, `mBERT`, and `XLM-RoBERTa
 1. **Content-Grouped Zero-Overlap Benchmark (`16,865` records, `7,475` unique `Standard_Text` groups):** Harmonizes *Chattogram Sent*, *ANUBHUTI*, and *SAPTAK* (including manual three-class sentiment labels on the `981` underlying *SAPTAK* Standard Bangla sentences projected to Sylhet, Noakhali, and Mymensingh) with Unicode NFC normalization, SHA-256 deduplication, and `0.00%` cross-split exact-group overlap (`train = 13,491`, `val = 1,689`, `test = 1,685`).
 2. **Multi-Tokenizer Fragmentation & Controlled Error Modeling:** Under official BUET normalization (`csebuetnlp/normalizer`, which improves `BanglaBERT` Stage 2 zero-shot Macro F1 by $+0.0578$ on seed $42$), Chattogram dialect inflections inflate corpus subword fertility by **$+48.61\%$** in `BanglaBERT` WordPiece ($1.1700 \rightarrow 1.7387$) and **$+40.45\%$** in `XLM-RoBERTa` SentencePiece ($1.7242 \rightarrow 2.4215$). Regional fertility correlates with zero-shot error ($r = 0.9907$, $R^2 = 0.9815$, $p = 0.0093$), and sentence-level logistic regression ($N = 1,685$) confirms that normalized edit distance ($\text{OR} = 7.28, p = 0.00012$) and subword fertility ($\text{OR} = 1.59, p = 0.0401$) significantly predict zero-shot error independently of length.
 3. **Stage-1-Initialized Anchor LoRA (`r = 8, alpha = 32` on `W_Q, W_V`):** Updating **$887,811$ trainable parameters (`0.8004%` of `110,914,563` active weights)** on Chattogram ($n = 5,201$) reduces peak GPU VRAM by **$46.4\%$** ($1,174.0\text{ MB}$ vs.\ $2,190.6\text{ MB}$) and lifts three-seed pooled performance to **$80.57 \pm 0.60\%$ Accuracy / $0.7516 \pm 0.0081$ Macro F1** (McNemar net $+88$ fixes, $p = 9.17 \times 10^{-7}$), improving strictly unseen non-anchor accuracy from $81.26\%$ to $83.87\%$ and outperforming head-only tuning ($75.43\% / 0.6928$), raw-initialized LoRA ($77.56\% / 0.7173$), and Chattogram full fine-tuning ($78.72\% / 0.7248$).
-4. **Controlled `4 x 4` Cross-Dialect Transfer Matrix & Cross-Backbone Generalization:** Evaluating all four dialects symmetrically as anchors across three seeds shows consistent positive non-anchor gains ($+2.61\%$ to $+3.23\%$ accuracy over Stage 2 baselines), generalizes to `mBERT` ($+0.0999$ Macro F1), and improves `XLM-RoBERTa` via learning-rate and initialization tuning ($0.4344 \rightarrow 0.6746$ Macro F1, seed $42$).
+4. **Controlled `4 x 4` Cross-Dialect Transfer Matrix & Cross-Backbone Generalization:** Evaluating all four dialects symmetrically as anchors across three seeds shows positive non-anchor gains on average ($+2.61\%$ to $+3.23\%$ accuracy over Stage 2 baselines), generalizes to `mBERT` ($+0.0999$ Macro F1), and improves `XLM-RoBERTa` via learning-rate and initialization tuning ($0.4344 \rightarrow 0.6746$ Macro F1, seed $42$).
 
 ---
 
@@ -41,7 +41,7 @@ Pretrained Bengali transformer encoders (`BanglaBERT`, `mBERT`, and `XLM-RoBERTa
 │       ├── classify_200_errors_v2.py            # Deterministic 4-way linguistic error taxonomy classifier
 │       └── generate_tallip_v2_figures.py        # Publication-grade 400 DPI colorblind-safe figure generator
 ├── requirements.txt                             # Python package dependencies
-├── LICENSE                                      # CC BY 4.0 data/annotations & MIT code license
+├── LICENSE                                      # CC BY-NC-SA 4.0 data/annotations & MIT code license
 └── README.md
 ```
 
@@ -51,11 +51,11 @@ Pretrained Bengali transformer encoders (`BanglaBERT`, `mBERT`, and `XLM-RoBERTa
 
 The clean benchmark (`16,865` rows: `13,491` train / `1,689` validation / `1,685` test) harmonizes three publicly accessible academic corpora:
 
-- **Chattogram Sent** (Chowdhury et al., 2025, Mendeley Data V1, `doi:10.17632/k6hts2ktxw.1`): `4,030` Chatgaiya-Standard pairs with native 3-class sentiment labels.
+- **Chattogram Sent** (Chowdhury et al., 2025, Mendeley Data V1, `doi:10.17632/k6hts2ktxw.1`, `CC BY 4.0`): `4,030` Chatgaiya-Standard pairs with native 3-class sentiment labels.
 - **ANUBHUTI** (Kundu et al., 2026, IEEE QPAIN, `doi:10.1109/QPAIN69676.2026.11545901`): `9,892` parallel 4-dialect utterances deterministically mapped from 7 Ekman emotions to 3 sentiment polarities.
-- **SAPTAK** (Rakib et al., 2026, Mendeley Data V1, `doi:10.17632/v9cf66fk2t.1`): `2,943` aligned Sylhet, Noakhali, and Mymensingh pairs (`981` per dialect) with manual 3-class sentiment labels on the `981` Standard Bangla source sentences.
+- **SAPTAK** (Rakib et al., 2026, Mendeley Data V1, `doi:10.17632/v9cf66fk2t.1`, `CC BY-NC-SA 4.0`): `2,943` aligned Sylhet, Noakhali, and Mymensingh pairs (`981` per dialect) with manual 3-class sentiment labels on the `981` Standard Bangla source sentences.
 
-All curation scripts, deduplicated splits, manual *SAPTAK* source sentiment annotations, and audit logs in this repository are released under **Creative Commons Attribution 4.0 International (CC BY 4.0)** (code under **MIT License**), subject to the original terms of the underlying source datasets.
+To honor *SAPTAK*'s share-alike license, all deduplicated splits, manual *SAPTAK* source sentiment annotations, and audit logs in this repository are released under **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)**, while curation/analysis scripts are released under the **MIT License**.
 
 ---
 

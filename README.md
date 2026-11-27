@@ -1,8 +1,8 @@
-# Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects
+# Subword Tokenization Mismatch and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects
 
 Official reproducibility repository for our ACM TALLIP Short Paper:
 
-> **Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects**  
+> **Subword Tokenization Mismatch and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects**  
 > Md Hasan Al Mamun*, Fatima Binte Aziz, Nadia Afrin Ritu, and Md. Musfique Anwar  
 > Department of Computer Science and Engineering, Jahangirnagar University, Savar, Dhaka 1342, Bangladesh  
 > (\*Corresponding author: `hasan.stu20195@juniv.edu`)
@@ -85,7 +85,7 @@ If you use this benchmark split, error taxonomy, or adaptation pipeline, please 
 ```bibtex
 @article{Mamun_2026_TALLIP,
   author  = {Mamun, Md Hasan Al and Aziz, Fatima Binte and Ritu, Nadia Afrin and Anwar, Md. Musfique},
-  title   = {Subword Tokenization Alienation and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects},
+  title   = {Subword Tokenization Mismatch and Cross-Dialect Anchor Low-Rank Adaptation in Bangla Dialects},
   journal = {ACM Transactions on Asian and Low-Resource Language Information Processing (TALLIP)},
   year    = {2026},
   note    = {Submitted}

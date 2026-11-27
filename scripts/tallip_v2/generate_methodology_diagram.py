@@ -141,7 +141,8 @@ def write_drawio_xml(out_path: str) -> None:
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="675" y="250" />
-              <mxPoint x="100" y="250" />
+              <mxPoint x="30" y="250" />
+              <mxPoint x="30" y="400" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -314,7 +315,7 @@ def render_publication_figure(out_dir: str) -> None:
 
     panel_b = Rectangle((0.15, 0.56), 12.50, 2.34, facecolor="none", edgecolor=COLORS["panel_bd"], linewidth=1.1, zorder=1)
     ax.add_patch(panel_b)
-    ax.text(0.28, 2.70, "(b) Stage-1-Initialized Anchor LoRA Architecture", ha="left", va="center",
+    ax.text(0.40, 2.70, "(b) Stage-1-Initialized Anchor LoRA Architecture", ha="left", va="center",
             fontsize=10.0, fontweight="bold", color=COLORS["panel_title"], zorder=5)
 
     # ------------------------------------------------------------------
@@ -349,8 +350,8 @@ def render_publication_figure(out_dir: str) -> None:
     # Panel (b) Nodes
     # ------------------------------------------------------------------
     yb_mid = 1.56
-    draw_parallelogram(ax, 0.88, yb_mid, 1.24, 0.58, "Dialect Input", r"$X_{\mathrm{dial}}$", skew=0.18)
-    draw_rect(ax, 2.40, yb_mid, 1.18, 0.58, "Tokenizer", "& Embedding")
+    draw_parallelogram(ax, 1.06, yb_mid, 1.20, 0.58, "Dialect Input", r"$X_{\mathrm{dial}}$", skew=0.16)
+    draw_rect(ax, 2.48, yb_mid, 1.14, 0.58, "Tokenizer", "& Embedding")
 
     # Grouping box for Transformer Layer (left-aligned title leaves top-right clear for dashed arrow!)
     layer_box = Rectangle((3.36, 0.72), 3.68, 1.72, facecolor="none", edgecolor=COLORS["group_bd"],
@@ -389,10 +390,10 @@ def render_publication_figure(out_dir: str) -> None:
     draw_rect(ax, 11.96, yb_mid, 1.18, 0.58, r"4$\times$4 Eval", "Unseen Dialects")
 
     # Panel (b) Arrows
-    draw_polyline_arrow(ax, [(1.55, yb_mid), (1.81, yb_mid)])
+    draw_polyline_arrow(ax, [(1.66, yb_mid), (1.91, yb_mid)])
     # Split x -> frozen and LoRA
-    draw_polyline_arrow(ax, [(2.99, yb_mid), (3.58, yb_mid), (3.58, y_frz), (4.00, y_frz)],
-                        label=r"$x$", label_pos=(3.18, yb_mid + 0.14))
+    draw_polyline_arrow(ax, [(3.05, yb_mid), (3.58, yb_mid), (3.58, y_frz), (4.00, y_frz)],
+                        label=r"$x$", label_pos=(3.22, yb_mid + 0.14))
     draw_polyline_arrow(ax, [(3.58, yb_mid), (3.58, y_lora), (3.82, y_lora)])
     # LoRA internal arrows
     draw_polyline_arrow(ax, [(4.54, y_lora), (4.76, y_lora)], color=COLORS["train_bd"], lw=1.2)
@@ -410,12 +411,12 @@ def render_publication_figure(out_dir: str) -> None:
     # ------------------------------------------------------------------
     # Inter-Panel Connectors (Zero Text Collisions, Zero Crossings)
     # ------------------------------------------------------------------
-    # Clean Splits -> Dialect Input
+    # Clean Splits -> Dialect Input (routed cleanly along far-left margin into left side of Dialect Input)
     draw_polyline_arrow(
         ax,
-        [(6.72, 3.78), (6.72, 3.11), (0.88, 3.11), (0.88, 1.85)],
+        [(6.72, 3.78), (6.72, 3.11), (0.26, 3.11), (0.26, yb_mid), (0.46, yb_mid)],
         color=COLORS["ink"], lw=1.15, ls="-",
-        label="Anchor Split", label_pos=(3.80, 3.11)
+        label="Anchor Split", label_pos=(3.50, 3.11)
     )
     # Stage 1 FT -> Frozen W_S1 (drops at x=5.94, strictly right of Panel (b) title & Transformer title!)
     draw_polyline_arrow(
